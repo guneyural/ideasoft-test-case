@@ -10,6 +10,7 @@ export interface ProductState {
   categories: Category[];
   brands: Brand[];
   searchFilters: Filter;
+  product: ProductType | null;
 }
 
 export interface Filter {
@@ -47,4 +48,7 @@ export interface ProductType {
   discount: number;
   discountType: number;
   stockTypeLabel: string;
+  warranty: string;
+  moneyOrderDiscount: number;
+  detail: { details: string };
 }

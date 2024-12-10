@@ -26,7 +26,7 @@ type Props = {
 function FiltersModal({ isModalVisible, setIsModalVisible }: Props) {
   const dispatch = useAppDispatch();
 
-  const Product = useAppSelector((state) => state.product);
+  const Product = useAppSelector((state) => state.Product);
 
   const [filterData, setFilterData] = useState(Product.searchFilters);
 

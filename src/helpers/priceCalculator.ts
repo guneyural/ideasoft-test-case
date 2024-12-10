@@ -101,3 +101,30 @@ export const calculateDiscountPercentage = (
 
   return Math.round(Math.round(discountPercentage * 100) / 100);
 };
+
+export const calculateMoneyOrderPrice = (
+  price: number,
+  moneyOrderDiscount: number,
+  taxIncluded: number,
+  tax: number,
+  productDiscountType: number,
+  productDiscount: number
+): string => {
+  let priceToWorkOn = calculateDiscountedPriceAsNumber(
+    price,
+    productDiscount,
+    productDiscountType,
+    tax,
+    taxIncluded
+  );
+
+  if (moneyOrderDiscount <= 0) return String(priceToWorkOn);
+
+  const discountedPrice =
+    priceToWorkOn - (priceToWorkOn * moneyOrderDiscount) / 100;
+  return discountedPrice.toFixed(2);
+};
+
+export const getTaxExcludedPrice = (price: number, tax: number): string => {
+  return (price / (1 + tax / 100)).toFixed(2);
+};

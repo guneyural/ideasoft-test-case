@@ -22,6 +22,7 @@ const initialState: ProductState = {
     sort: { label: "Önerilen Sıralama", value: "" },
     criticalStock: 0,
   },
+  product: null,
 };
 
 export const fetchHomeScreenProducts = createAsyncThunk(
@@ -83,6 +84,20 @@ export const fetchBrands = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await Axios.get("/admin-api/brands");
+
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response)
+        return rejectWithValue(error.response);
+    }
+  }
+);
+
+export const fetchProductById = createAsyncThunk(
+  "fetchProductById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await Axios.get(`/admin-api/products/${id}`);
 
       return response.data;
     } catch (error: any) {
@@ -205,6 +220,26 @@ const ProductSlice = createSlice({
         }
       )
       .addCase(fetchBrands.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = {
+          message: action.payload?.data?.message,
+          status: action.payload?.status,
+        };
+      });
+
+    builder
+      .addCase(fetchProductById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchProductById.fulfilled,
+        (state, action: PayloadAction<ProductType>) => {
+          state.isLoading = false;
+          state.product = action.payload;
+        }
+      )
+      .addCase(fetchProductById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = {
           message: action.payload?.data?.message,

@@ -1,4 +1,4 @@
-import { Dimensions, Image, Text, View } from "react-native";
+import { Dimensions, Image, Pressable, Text, View } from "react-native";
 import { daysSinceCreation } from "../../helpers/dateCalculator";
 import {
   calculateDiscountedPrice,
@@ -11,6 +11,7 @@ import { truncateText } from "../../helpers/text";
 import { ProductType } from "../../store/slices/Product/types";
 import { useAppDispatch } from "../../helpers/reduxHooks";
 import { addToCart } from "../../store/slices/ShoppingCart/ShoppingCartSlice";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const cardWidth = Math.floor(width / 2 - 24);
@@ -22,10 +23,15 @@ type Props = {
 function ProductItem({ product }: Props) {
   const dispatch = useAppDispatch();
 
+  const navigation = useNavigation();
+
   return (
-    <View
+    <Pressable
       className="p-2 mr-4 rounded-md flex-col justify-between border-2 border-gray-50"
       style={{ width: cardWidth }}
+      onPress={() =>
+        navigation.navigate("ProductDetailsScreen", { id: product.id })
+      }
     >
       <View>
         <View className={`h-[130px] items-center justify-center`}>
@@ -131,7 +137,7 @@ function ProductItem({ product }: Props) {
       >
         <Text className="text-white font-semibold">Sepete Ekle</Text>
       </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 }
 

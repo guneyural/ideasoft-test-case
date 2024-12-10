@@ -28,7 +28,7 @@ import normalizeSearchFilters from "../../helpers/normalizeSearchFilters";
 
 function SearchScreen() {
   const dispatch = useAppDispatch();
-  const Product = useAppSelector((state) => state.product);
+  const Product = useAppSelector((state) => state.Product);
 
   const [isFiltersModalVisible, setIsFiltersModalVisible] = useState(false);
   const [query, setQuery] = useState({

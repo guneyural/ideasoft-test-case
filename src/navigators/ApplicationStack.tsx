@@ -6,9 +6,11 @@ import {
 } from "@react-navigation/stack";
 import BottomTabs from "./BottomTabs";
 import { NavigationContainer } from "@react-navigation/native";
+import ProductDetailsScreen from "../screens/Product/ProductDetailsScreen";
 
 export type ApplicationStackParamList = {
   StartupScreen: undefined;
+  ProductDetailsScreen: { id: string };
 };
 
 const Stack = createStackNavigator<ApplicationStackParamList>();
@@ -25,6 +27,10 @@ function ApplicationStack(): JSX.Element {
         initialRouteName="StartupScreen"
       >
         <Stack.Screen name="StartupScreen" component={BottomTabs} />
+        <Stack.Screen
+          name="ProductDetailsScreen"
+          component={ProductDetailsScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -22,7 +22,7 @@ function ShoppingCart() {
 
   const navigation = useNavigation<NavigationProps>();
 
-  const ShoppingCart = useAppSelector((state) => state.shoppingCart);
+  const ShoppingCart = useAppSelector((state) => state.ShoppingCart);
 
   if (ShoppingCart.items.length == 0)
     return (

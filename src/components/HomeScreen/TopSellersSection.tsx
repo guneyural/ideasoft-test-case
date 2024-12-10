@@ -3,7 +3,7 @@ import { useAppSelector } from "../../helpers/reduxHooks";
 import ProductItem from "../Product/ProductItem";
 
 function TopSellersSection() {
-  const Product = useAppSelector((state) => state.product);
+  const Product = useAppSelector((state) => state.Product);
 
   return (
     <View className="mt-5">

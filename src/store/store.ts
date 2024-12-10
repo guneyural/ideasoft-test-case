@@ -20,8 +20,8 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  shoppingCart: persistReducer(persistConfig, ShoppingCartSlice),
-  product: ProductSlice,
+  ShoppingCart: persistReducer(persistConfig, ShoppingCartSlice),
+  Product: ProductSlice,
 });
 
 export const store = configureStore({
