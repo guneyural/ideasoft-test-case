@@ -9,8 +9,10 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import ProductSlice from "./slices/Product/ProductSlice";
 import storage from "@react-native-async-storage/async-storage";
+
+import ProductSlice from "./slices/Product/ProductSlice";
+import ShoppingCartSlice from "./slices/ShoppingCart/ShoppingCartSlice";
 
 const persistConfig = {
   key: "root",
@@ -18,7 +20,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  //shoppingCart: persistReducer(persistConfig, shoppingCartSlice),
+  shoppingCart: persistReducer(persistConfig, ShoppingCartSlice),
   product: ProductSlice,
 });
 

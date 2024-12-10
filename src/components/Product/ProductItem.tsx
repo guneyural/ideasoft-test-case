@@ -43,12 +43,15 @@ function ProductItem({ product }: Props) {
             ) : null}
           </View>
 
-          {product.images.length == 0 ? (
-            <Image
-              source={require("../../../assets/nopic_image.png")}
-              className="h-[100px] w-[100px]"
-            />
-          ) : null}
+          <Image
+            source={
+              product.images.length > 0
+                ? { uri: product.images[0] }
+                : require("../../../assets/nopic_image.png")
+            }
+            className="w-[100px] h-[100px] rounded-md"
+            resizeMode="contain"
+          />
 
           {product.stockAmount <= 0 ? (
             <View className="absolute bg-white p-2 border-[1px] border-slate-200 rounded-md">

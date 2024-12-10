@@ -17,7 +17,8 @@ export const calculateDiscountedPrice = (
   discountType: number,
   tax: number,
   taxIncluded: number,
-  currencyId: number
+  currencyId: number,
+  calculateTax = true
 ): string => {
   let discountedPrice: number;
 
@@ -29,7 +30,7 @@ export const calculateDiscountedPrice = (
     discountedPrice = price;
   }
 
-  if (taxIncluded === 0) {
+  if (taxIncluded === 0 && calculateTax) {
     return calculateTaxIncludedValue(
       tax,
       discountedPrice,
