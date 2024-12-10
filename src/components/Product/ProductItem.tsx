@@ -24,22 +24,26 @@ function ProductItem({ product }: Props) {
 
   return (
     <View
-      className="p-2 mr-4 rounded-md flex-col justify-between"
+      className="p-2 mr-4 rounded-md flex-col justify-between border-2 border-gray-50"
       style={{ width: cardWidth }}
     >
       <View>
         <View className={`h-[130px] items-center justify-center`}>
           <View className="absolute top-0 left-0 z-10">
-            {daysSinceCreation(product.createdAt) <= 2 ? (
-              <View className="bg-white p-1 border-[1px] border-slate-200 rounded-md self-start">
-                <Text className="text-[10px] font-medium">YENİ</Text>
-              </View>
-            ) : null}
+            {product.stockAmount > 0 ? (
+              <>
+                {daysSinceCreation(product.createdAt) <= 2 ? (
+                  <View className="bg-white p-1 border-[1px] border-slate-200 rounded-md self-start">
+                    <Text className="text-[10px] font-medium">YENİ</Text>
+                  </View>
+                ) : null}
 
-            {product.hasGift == 1 ? (
-              <View className="bg-white p-1 border-[1px] border-slate-200 rounded-md self-start mt-1">
-                <Text className="text-[10px] font-medium">HEDİYELİ</Text>
-              </View>
+                {product.hasGift == 1 ? (
+                  <View className="bg-white p-1 border-[1px] border-slate-200 rounded-md self-start mt-1">
+                    <Text className="text-[10px] font-medium">HEDİYELİ</Text>
+                  </View>
+                ) : null}
+              </>
             ) : null}
           </View>
 

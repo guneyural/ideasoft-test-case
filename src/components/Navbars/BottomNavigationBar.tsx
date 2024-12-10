@@ -16,7 +16,7 @@ function BottomNavigationBar({ currentScreen }: Props) {
   const navigation = useNavigation<NavigationProps>();
 
   return (
-    <View className="flex-row items-center justify-between py-1 border-t-slate-100 border-t-[1px]">
+    <View className="flex-row items-center justify-between py-1 border-t-slate-100 border-t-[1px] bg-white">
       <TouchableOpacity
         onPress={() => navigation.navigate("Home")}
         className="flex-1 items-center py-2"
