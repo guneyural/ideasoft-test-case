@@ -16,7 +16,7 @@ const ShoppingCartScreenFooter: React.FC<Props> = ({
         Toplam: {totalPrice.toFixed(2)}₺
       </Text>
       <TouchableOpacity
-        className="bg-blue-500 px-4 py-2 rounded-md"
+        className="bg-black px-4 py-2 rounded-md"
         onPress={onProceedToCheckout}
       >
         <Text className="text-white font-semibold">Ödeme Yap</Text>
