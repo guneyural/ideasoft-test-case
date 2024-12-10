@@ -1,5 +1,6 @@
-import { FlatList, ScrollView, Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { useAppSelector } from "../../helpers/reduxHooks";
+import ProductItem from "../Product/ProductItem";
 
 function TopSellersSection() {
   const Product = useAppSelector((state) => state.product);
@@ -12,10 +13,10 @@ function TopSellersSection() {
 
       <FlatList
         data={Product.products}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => <Text>{item.name}</Text>}
+        renderItem={({ item }) => <ProductItem product={item} />}
       />
     </View>
   );
