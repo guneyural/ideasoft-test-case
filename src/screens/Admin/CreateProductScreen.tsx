@@ -382,7 +382,11 @@ function CreateProductScreen({ navigation, route }: CreateProductScreenProps) {
                       100
                     );
 
-                    setProduct({ ...product, discount: parsedValue });
+                    setProduct({
+                      ...product,
+                      discount: parsedValue,
+                      discountType: Number(value),
+                    });
                   } else {
                     setProduct({
                       ...product,
