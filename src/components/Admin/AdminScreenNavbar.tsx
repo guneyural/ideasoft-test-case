@@ -22,7 +22,7 @@ function AdminScreenNavbar({ screenTitle }: Props) {
         </TouchableOpacity>
       </View>
 
-      <View className="flex-1 items-center">
+      <View className="flex-4 items-center">
         <Text className="font-extrabold text-lg text-center">
           {screenTitle}
         </Text>

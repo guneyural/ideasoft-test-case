@@ -179,7 +179,7 @@ function FiltersModal({ isModalVisible, setIsModalVisible }: Props) {
                 className="bg-black rounded-md p-3 items-center"
                 onPress={handleSubmit}
               >
-                <Text className="text-white font-bold">Apply Filters</Text>
+                <Text className="text-white font-bold">Filtreleri Uygula</Text>
               </TouchableOpacity>
             </View>
           </View>

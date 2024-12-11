@@ -32,7 +32,7 @@ export const fetchAdminPanelCategories = createAsyncThunk(
   "fetchAdminPanelCategories",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await Axios.get("/admin-api/categories");
+      const response = await Axios.get("/admin-api/categories?sort=-sortOrder");
 
       return response.data;
     } catch (error: any) {
@@ -80,6 +80,56 @@ export const updateProduct = createAsyncThunk(
 
       Toast.show({ type: "success", text1: "Ürün başarıyla güncellendi." });
       return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response)
+        return rejectWithValue(error.response);
+    }
+  }
+);
+
+export const createCategory = createAsyncThunk(
+  "createCategory",
+  async (data: Category, { rejectWithValue }) => {
+    try {
+      const response = await Axios.post(`/admin-api/categories`, data);
+
+      Toast.show({ type: "success", text1: "Kategori başarıyla oluşturuldu." });
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response)
+        return rejectWithValue(error.response);
+    }
+  }
+);
+
+export const updateCategory = createAsyncThunk(
+  "updateCategory",
+  async (data: Category, { rejectWithValue }) => {
+    try {
+      const response = await Axios.put(
+        `/admin-api/categories/${data.id}`,
+        data
+      );
+
+      Toast.show({ type: "success", text1: "Kategori başarıyla güncellendi." });
+
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response)
+        return rejectWithValue(error.response);
+    }
+  }
+);
+
+export const deleteCategory = createAsyncThunk(
+  "deleteCategory",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await Axios.delete(`/admin-api/categories/${id}`);
+
+      Toast.show({ type: "success", text1: "Kategori başarıyla silindi." });
+
+      return id;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response)
         return rejectWithValue(error.response);
@@ -189,6 +239,70 @@ const adminSlice = createSlice({
         }
       )
       .addCase(updateProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = {
+          message: action.payload?.data?.message,
+          status: action.payload?.status,
+        };
+      });
+
+    builder
+      .addCase(createCategory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        createCategory.fulfilled,
+        (state, action: PayloadAction<Category>) => {
+          state.isLoading = false;
+          state.categories = [action.payload, ...state.categories];
+        }
+      )
+      .addCase(createCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = {
+          message: action.payload?.data?.message,
+          status: action.payload?.status,
+        };
+      });
+
+    builder
+      .addCase(updateCategory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateCategory.fulfilled,
+        (state, action: PayloadAction<Category>) => {
+          state.isLoading = false;
+          state.categories = state.categories.map((item) =>
+            item.id == action.payload.id ? action.payload : item
+          );
+        }
+      )
+      .addCase(updateCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = {
+          message: action.payload?.data?.message,
+          status: action.payload?.status,
+        };
+      });
+
+    builder
+      .addCase(deleteCategory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteCategory.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.isLoading = false;
+          state.categories = state.categories.filter(
+            (item) => item.id?.toString() != action.payload.toString()
+          );
+        }
+      )
+      .addCase(deleteCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = {
           message: action.payload?.data?.message,

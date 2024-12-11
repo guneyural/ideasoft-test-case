@@ -10,7 +10,8 @@ import ProductDetailsScreen from "../screens/Product/ProductDetailsScreen";
 import AdminProductsScreen from "../screens/Admin/AdminProductsScreen";
 import AdminCategoriesScreen from "../screens/Admin/AdminCategoriesScreen";
 import CreateProductScreen from "../screens/Admin/CreateProductScreen";
-import { ProductType } from "../store/slices/Product/types";
+import { Category, ProductType } from "../store/slices/Product/types";
+import CreateCategoryScreen from "../screens/Admin/CreateCategoryScreen";
 
 export type ApplicationStackParamList = {
   StartupScreen: undefined;
@@ -18,6 +19,7 @@ export type ApplicationStackParamList = {
   AdminProductsScreen: undefined;
   AdminCategoriesScreen: undefined;
   CreateProductScreen: { product: ProductType | null; isUpdating: boolean };
+  CreateCategoryScreen: { category: Category | null; isUpdating: boolean };
 };
 
 const Stack = createStackNavigator<ApplicationStackParamList>();
@@ -49,6 +51,10 @@ function ApplicationStack(): JSX.Element {
         <Stack.Screen
           name="CreateProductScreen"
           component={CreateProductScreen}
+        />
+        <Stack.Screen
+          name="CreateCategoryScreen"
+          component={CreateCategoryScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

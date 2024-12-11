@@ -31,7 +31,16 @@ export interface Brand {
 
 export interface Category {
   name: string;
-  id: number;
+  id?: number;
+  displayShowcaseContent: number;
+  showcaseContent: string;
+  showcaseContentDisplayType: number;
+  displayShowcaseFooterContent: number;
+  showcaseFooterContent: string;
+  showcaseFooterContentDisplayType: number;
+  metaDescription: string;
+  metaKeywords: string;
+  status: number;
 }
 
 export interface ProductType {

@@ -71,7 +71,7 @@ export const fetchCategories = createAsyncThunk(
   "fetchCategories",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await Axios.get("/admin-api/categories");
+      const response = await Axios.get("/admin-api/categories?sort=-sortOrder");
 
       return response.data;
     } catch (error: any) {
