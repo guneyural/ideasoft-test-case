@@ -30,7 +30,7 @@ export const fetchHomeScreenProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await Axios.get(
-        "/admin-api/products?sort=-homeSortOrder"
+        "/admin-api/products?sort=-homeSortOrder&status=1"
       );
 
       return response.data;
