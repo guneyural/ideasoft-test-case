@@ -16,7 +16,9 @@ export const fetchAdminPanelProducts = createAsyncThunk(
   "fetchAdminPanelProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await Axios.get("/admin-api/products?sort=-homeSortOrder");
+      const response = await Axios.get(
+        "/admin-api/products?sort=-homeSortOrder"
+      );
 
       return response.data;
     } catch (error: any) {
@@ -48,6 +50,36 @@ export const deleteProduct = createAsyncThunk(
 
       Toast.show({ type: "success", text1: "Ürün başarıyla silindi." });
       return id;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response)
+        return rejectWithValue(error.response);
+    }
+  }
+);
+
+export const createProduct = createAsyncThunk(
+  "createProduct",
+  async (data: ProductType, { rejectWithValue }) => {
+    try {
+      const response = await Axios.post(`/admin-api/products`, data);
+
+      Toast.show({ type: "success", text1: "Ürün başarıyla oluşturuldu." });
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response)
+        return rejectWithValue(error.response);
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  "updateProduct",
+  async (data: ProductType, { rejectWithValue }) => {
+    try {
+      const response = await Axios.put(`/admin-api/products/${data.id}`, data);
+
+      Toast.show({ type: "success", text1: "Ürün başarıyla güncellendi." });
+      return response.data;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response)
         return rejectWithValue(error.response);
@@ -115,6 +147,48 @@ const adminSlice = createSlice({
         }
       )
       .addCase(deleteProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = {
+          message: action.payload?.data?.message,
+          status: action.payload?.status,
+        };
+      });
+
+    builder
+      .addCase(createProduct.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        createProduct.fulfilled,
+        (state, action: PayloadAction<ProductType>) => {
+          state.isLoading = false;
+          state.products = [action.payload, ...state.products];
+        }
+      )
+      .addCase(createProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = {
+          message: action.payload?.data?.message,
+          status: action.payload?.status,
+        };
+      });
+
+    builder
+      .addCase(updateProduct.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateProduct.fulfilled,
+        (state, action: PayloadAction<ProductType>) => {
+          state.isLoading = false;
+          state.products = state.products.map((item) =>
+            item.id == action.payload.id ? action.payload : item
+          );
+        }
+      )
+      .addCase(updateProduct.rejected, (state, action) => {
         state.isLoading = false;
         state.error = {
           message: action.payload?.data?.message,

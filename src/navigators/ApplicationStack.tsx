@@ -10,13 +10,14 @@ import ProductDetailsScreen from "../screens/Product/ProductDetailsScreen";
 import AdminProductsScreen from "../screens/Admin/AdminProductsScreen";
 import AdminCategoriesScreen from "../screens/Admin/AdminCategoriesScreen";
 import CreateProductScreen from "../screens/Admin/CreateProductScreen";
+import { ProductType } from "../store/slices/Product/types";
 
 export type ApplicationStackParamList = {
   StartupScreen: undefined;
   ProductDetailsScreen: { id: string };
   AdminProductsScreen: undefined;
   AdminCategoriesScreen: undefined;
-  CreateProductScreen: undefined;
+  CreateProductScreen: { product: ProductType | null; isUpdating: boolean };
 };
 
 const Stack = createStackNavigator<ApplicationStackParamList>();

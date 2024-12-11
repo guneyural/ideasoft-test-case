@@ -36,13 +36,13 @@ export interface Category {
 
 export interface ProductType {
   id: number;
-  images: string[];
+  images?: string[];
   name: string;
   stockAmount: number;
-  createdAt: Date;
+  createdAt?: Date;
   taxIncluded: number;
   price1: number;
-  currency: { id: number; abbr: string; label: string };
+  currency: { id: number; abbr?: string; label?: string };
   tax: number;
   hasGift: number;
   discount: number;
@@ -51,4 +51,12 @@ export interface ProductType {
   warranty: string;
   moneyOrderDiscount: number;
   detail: { details: string };
+  sku: string;
+  barcode: string;
+  status: number;
+  shortDetails: string;
+  searchKeywords: string;
+  metaKeywords: string;
+  metaDescription: string;
+  gift: string;
 }

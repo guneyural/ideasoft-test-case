@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import AdminScreenNavbar from "../../components/Admin/AdminScreenNavbar";
 import { useState } from "react";
-import { useAppSelector } from "../../helpers/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../helpers/reduxHooks";
 import { TouchableOpacity } from "react-native";
 import CustomSelect from "../../components/SearchScreen/CustomSelect";
 import {
@@ -16,6 +16,13 @@ import {
   stockTypeLabelTranslator,
 } from "../../helpers/text";
 import Toast from "react-native-toast-message";
+import {
+  createProduct,
+  updateProduct,
+} from "../../store/slices/Admin/AdminSlice";
+import { ApplicationStackParamList } from "../../navigators/ApplicationStack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { ProductType } from "../../store/slices/Product/types";
 
 const currencyOptions = [
   { label: "Dolar", value: "1" },
@@ -39,29 +46,45 @@ const discountTypeOptions = [
   { label: "İndirimli Fiyatı Yaz", value: 0 },
 ];
 
-function CreateProductScreen() {
+type CreateProductScreenProps = NativeStackScreenProps<
+  ApplicationStackParamList,
+  "CreateProductScreen"
+>;
+
+function CreateProductScreen({ navigation, route }: CreateProductScreenProps) {
+  const dispatch = useAppDispatch();
   const Admin = useAppSelector((state) => state.Admin);
 
-  const [product, setProduct] = useState({
-    name: "",
-    shortDetails: "",
-    searchKeywords: "",
-    detail: { details: "" },
-    price1: 0,
-    stockAmount: 0,
-    tax: 18,
-    taxIncluded: 0,
-    discount: 0,
-    moneyOrderDiscount: 0,
-    warranty: 0,
-    stockTypeLabel: "Piece",
-    distributor: "",
-    hasGift: 0,
-    gift: "",
-    status: 1,
-    currency: { id: 3 },
-    discountType: 0,
-  });
+  const [product, setProduct] = useState(
+    route.params.isUpdating
+      ? (route.params.product as ProductType)
+      : {
+          name: "",
+          shortDetails: "",
+          searchKeywords: "",
+          detail: { details: "" },
+          price1: 0,
+          stockAmount: 0,
+          tax: 18,
+          taxIncluded: 0,
+          discount: 0,
+          moneyOrderDiscount: 0,
+          warranty: 0,
+          stockTypeLabel: "Piece",
+          distributor: "",
+          hasGift: 0,
+          gift: "",
+          status: 1,
+          currency: { id: 3 },
+          discountType: 0,
+          sku: "",
+          barcode: "",
+          metaDescription: "",
+          metaKeywords: "",
+        }
+  );
+
+  const [discount, setDiscount] = useState(false);
 
   const autoGenerateFields = () => {
     const highestId =
@@ -73,30 +96,33 @@ function CreateProductScreen() {
       ? product.name.toLowerCase().replace(/\s+/g, "-")
       : "product-slug";
 
-    return {
-      slug,
-      installmentThreshold: "-",
-      categoryShowcaseStatus: 0,
-      homeSortOrder: highestId + 1,
-      popularSortOrder: highestId + 1,
-      featuredSortOrder: highestId + 1,
-      campaignedSortOrder: highestId + 1,
-      newSortOrder: highestId + 1,
-      discountedSortOrder: highestId + 1,
-      midblockSortOrder: highestId + 1,
-      pageTitle: product.name,
-      metaDescription: product.shortDetails,
-      metaKeywords: product.searchKeywords,
-      canonicalUrl: `urun/${slug}`,
-    };
+    return route.params.isUpdating
+      ? {
+          slug,
+          pageTitle: product.name,
+          canonicalUrl: `urun/${slug}`,
+        }
+      : {
+          slug,
+          installmentThreshold: "-",
+          categoryShowcaseStatus: 1,
+          homeSortOrder: highestId + 1,
+          popularSortOrder: highestId + 1,
+          featuredSortOrder: highestId + 1,
+          campaignedSortOrder: highestId + 1,
+          newSortOrder: highestId + 1,
+          discountedSortOrder: highestId + 1,
+          midblockSortOrder: highestId + 1,
+          pageTitle: product.name,
+          canonicalUrl: `urun/${slug}`,
+        };
   };
 
   const handleSubmit = () => {
     const requiredFields = [
       "name",
-      "shortDetails",
-      "searchKeywords",
-      "detail",
+      "metaDescription",
+      "metaKeywords",
       "price1",
       "stockAmount",
       "tax",
@@ -109,17 +135,22 @@ function CreateProductScreen() {
       "status",
       "currency",
       "discountType",
+      "sku",
     ];
 
     for (let field of requiredFields) {
-      if (!product[field] && product[field] !== 0) {
-        Toast.show({
+      if (!product[field] && product[field] !== 0)
+        return Toast.show({
           type: "error",
           text1: "Lütfen tüm alanları doldurun",
         });
-        return;
-      }
     }
+
+    if (!product["detail"] || product["detail"]["details"] == "")
+      return Toast.show({
+        type: "error",
+        text1: "Lütfen tüm alanları doldurun",
+      });
 
     if (product.hasGift === 1 && !product.gift)
       return Toast.show({
@@ -127,21 +158,33 @@ function CreateProductScreen() {
         text1: "Lütfen hediye açıklamasını doldurun",
       });
 
+    if (Number(product.price1) <= 0)
+      return Toast.show({
+        type: "error",
+        text1: "Lütfen geçerli bir fiyat girin",
+      });
+
     if (product.discount == 0) product["discountType"] = 1; // If there is no discount, discountType should be percentage value
 
     const autoFields = autoGenerateFields();
     const newProduct = { ...product, ...autoFields };
-    console.log("Product Created:", newProduct);
 
-    Toast.show({
-      type: "success",
-      text1: "Ürün başarıyla oluşturuldu",
-    });
+    if (route.params.isUpdating) {
+      dispatch(updateProduct(newProduct as ProductType)).then((res) => {
+        if (res.type == "updateProduct/fulfilled") navigation.goBack();
+      });
+    } else {
+      dispatch(createProduct(newProduct as ProductType)).then((res) => {
+        if (res.type == "createProduct/fulfilled") navigation.goBack();
+      });
+    }
   };
 
   return (
     <SafeAreaView className="bg-white flex-1">
-      <AdminScreenNavbar screenTitle="Ürün Oluştur" />
+      <AdminScreenNavbar
+        screenTitle={route.params.isUpdating ? "Ürün Güncelle" : "Ürün Oluştur"}
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} className="bg-white p-4">
         <View className="mb-6">
@@ -154,6 +197,28 @@ function CreateProductScreen() {
           />
         </View>
 
+        <View className="mb-4">
+          <Text className="text-gray-700 font-semibold mb-2">SKU</Text>
+          <TextInput
+            className="border border-gray-300 rounded-lg px-4 py-2"
+            placeholder="Ürün SKU'sunu girin"
+            value={product.sku}
+            onChangeText={(text) =>
+              setProduct({ ...product, sku: text.trim() })
+            }
+          />
+        </View>
+
+        <View className="mb-4">
+          <Text className="text-gray-700 font-semibold mb-2">Barkod</Text>
+          <TextInput
+            className="border border-gray-300 rounded-lg px-4 py-2"
+            placeholder="Barkod girin"
+            value={product.barcode}
+            onChangeText={(text) => setProduct({ ...product, barcode: text })}
+          />
+        </View>
+
         <View className="mb-6">
           <Text className="text-gray-700 font-semibold mb-2">
             Kısa Açıklama
@@ -161,9 +226,9 @@ function CreateProductScreen() {
           <TextInput
             className="border border-gray-300 rounded-lg px-4 py-2"
             placeholder="Kısa açıklama girin"
-            value={product.shortDetails}
+            value={product.metaDescription}
             onChangeText={(text) =>
-              setProduct({ ...product, shortDetails: text })
+              setProduct({ ...product, metaDescription: text })
             }
           />
         </View>
@@ -175,9 +240,9 @@ function CreateProductScreen() {
           <TextInput
             className="border border-gray-300 rounded-lg px-4 py-2"
             placeholder="Virgül ile ayırarak girin"
-            value={product.searchKeywords}
+            value={product.metaKeywords}
             onChangeText={(text) =>
-              setProduct({ ...product, searchKeywords: text })
+              setProduct({ ...product, metaKeywords: text })
             }
           />
         </View>
@@ -261,6 +326,75 @@ function CreateProductScreen() {
           </View>
         ) : null}
 
+        <View className="flex-row items-center mb-4">
+          <Text className="text-gray-700 font-semibold mr-2">İndirim Ekle</Text>
+          <Switch
+            value={discount}
+            onValueChange={(value) => setDiscount(value)}
+          />
+        </View>
+
+        {discount ? (
+          <View className="flex-row items-center justify-between">
+            <View className="mb-4 flex-1 mr-4">
+              <Text className="text-gray-700 font-semibold mb-2">
+                {product.discountType == 1
+                  ? "İndirim Yüzdesi (%)"
+                  : "İndirimli Fiyat"}
+              </Text>
+              <TextInput
+                className="border border-gray-300 rounded-lg px-4 py-2"
+                placeholder="İndirim değerini girin"
+                keyboardType="numeric"
+                value={product.discount.toString()}
+                onChangeText={(text) => {
+                  let parsedValue = parseInt(text) || 0;
+
+                  if (product.discountType == 1)
+                    parsedValue = Math.min(Math.max(parsedValue, 0), 100);
+
+                  setProduct({
+                    ...product,
+                    discount: parsedValue,
+                  });
+                }}
+              />
+            </View>
+
+            <View className="mb-4 flex-1">
+              <Text className="text-gray-700 font-semibold mb-2">
+                İndirim Türü
+              </Text>
+              <CustomSelect
+                options={discountTypeOptions}
+                title="İndirim Türü Seçin"
+                selectedValue={{
+                  label:
+                    product.discountType === 1
+                      ? "Yüzde Olarak İndir"
+                      : "İndirimli Fiyatı Yaz",
+                  value: product.discountType.toString(),
+                }}
+                onSelect={({ value }) => {
+                  if (Number(value) == 1) {
+                    const parsedValue = Math.min(
+                      Math.max(product.discount, 0),
+                      100
+                    );
+
+                    setProduct({ ...product, discount: parsedValue });
+                  } else {
+                    setProduct({
+                      ...product,
+                      discountType: Number(value),
+                    });
+                  }
+                }}
+              />
+            </View>
+          </View>
+        ) : null}
+
         <View className="flex-row items-center justify-between mb-6">
           <View className="flex-1 mr-2">
             <Text className="text-gray-700 font-semibold mb-2">Stok Adeti</Text>
@@ -328,51 +462,6 @@ function CreateProductScreen() {
               })
             }
           />
-        </View>
-
-        <View className="flex-row items-center justify-between">
-          <View className="mb-4 flex-1 mr-4">
-            <Text className="text-gray-700 font-semibold mb-2">
-              {product.discountType == 1
-                ? "İndirim Yüzdesi (%)"
-                : "İndirimli Fiyat"}
-            </Text>
-            <TextInput
-              className="border border-gray-300 rounded-lg px-4 py-2"
-              placeholder="İndirim değerini girin"
-              keyboardType="numeric"
-              value={product.discount.toString()}
-              onChangeText={(text) =>
-                setProduct({
-                  ...product,
-                  discount: parseInt(text) || 0,
-                })
-              }
-            />
-          </View>
-
-          <View className="mb-4 flex-1">
-            <Text className="text-gray-700 font-semibold mb-2">
-              İndirim Türü
-            </Text>
-            <CustomSelect
-              options={discountTypeOptions}
-              title="İndirim Türü Seçin"
-              selectedValue={{
-                label:
-                  product.discountType === 1
-                    ? "Yüzde Olarak İndir"
-                    : "İndirimli Fiyatı Yaz",
-                value: product.discountType.toString(),
-              }}
-              onSelect={({ value }) =>
-                setProduct({
-                  ...product,
-                  discountType: Number(value),
-                })
-              }
-            />
-          </View>
         </View>
 
         <View className="mb-4">

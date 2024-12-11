@@ -35,7 +35,12 @@ function AdminProductsScreen({ navigation }: ProductDetailsScreenProps) {
             <View className="w-full flex-1 pr-5 mt-3">
               <TouchableOpacity
                 className="bg-green-800 flex-1 py-2 rounded-xl mb-4 flex-row items-center justify-center gap-2"
-                onPress={() => navigation.navigate("CreateProductScreen")}
+                onPress={() =>
+                  navigation.navigate("CreateProductScreen", {
+                    product: null,
+                    isUpdating: false,
+                  })
+                }
               >
                 <AntDesign name="plus" color="white" size={20} />
 

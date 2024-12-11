@@ -11,10 +11,11 @@ import { truncateText } from "../../helpers/text";
 import { ProductType } from "../../store/slices/Product/types";
 import { useAppDispatch } from "../../helpers/reduxHooks";
 import { addToCart } from "../../store/slices/ShoppingCart/ShoppingCartSlice";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Antdesign from "react-native-vector-icons/AntDesign";
 import { deleteProduct } from "../../store/slices/Admin/AdminSlice";
+import { ApplicationStackParamList } from "../../navigators/ApplicationStack";
 
 const { width } = Dimensions.get("window");
 const cardWidth = Math.floor(width / 2 - 24);
@@ -27,14 +28,16 @@ type Props = {
 function ProductItem({ product, adminView = false }: Props) {
   const dispatch = useAppDispatch();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ApplicationStackParamList>>();
 
   return (
     <Pressable
       className="p-2 mr-4 rounded-md flex-col justify-between border-2 border-gray-50"
       style={{ width: cardWidth }}
       onPress={() =>
-        navigation.navigate("ProductDetailsScreen", { id: product.id })
+        navigation.navigate("ProductDetailsScreen", {
+          id: product.id.toString(),
+        })
       }
     >
       <View>
@@ -137,13 +140,21 @@ function ProductItem({ product, adminView = false }: Props) {
 
       {adminView ? (
         <View className="flex-row gap-5 mt-4">
-          <TouchableOpacity className="bg-blue-600 items-center py-2 rounded-lg flex-1">
+          <TouchableOpacity
+            className="bg-blue-600 items-center py-2 rounded-lg flex-1"
+            onPress={() =>
+              navigation.navigate("CreateProductScreen", {
+                product,
+                isUpdating: true,
+              })
+            }
+          >
             <Antdesign name="edit" size={20} color="white" />
           </TouchableOpacity>
 
           <TouchableOpacity
             className="bg-red-600 items-center py-2 rounded-lg flex-1"
-            onPress={() => dispatch(deleteProduct(product.id))}
+            onPress={() => dispatch(deleteProduct(product.id.toString()))}
           >
             <Ionicons name="trash-outline" color="white" size={20} />
           </TouchableOpacity>
