@@ -42,4 +42,4 @@ React Native tarafında filtrelerde düzenleme olduğu zaman URL parametreleri k
    [Alıcılar iOS Uygulaması](https://apps.apple.com/tr/app/al%C4%B1c%C4%B1lar/id1540652598?l=tr)  
    [Alıcılar Android Uygulaması](https://play.google.com/store/apps/details?id=com.alicilar.amobile)
 
-  **Not**: React Native ile geliştirdim. Mağaza işlemleri ve Node.js backend kodlarından benim sorumlu olduğum proje.
+  **Not**: React Native ile geliştirdim. Frontend, Node.js backend ve mağaza işlemlerinden benim sorumlu olduğum proje.
