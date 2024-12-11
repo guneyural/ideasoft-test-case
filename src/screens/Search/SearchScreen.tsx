@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  Platform,
   SafeAreaView,
   Text,
   TextInput,
@@ -107,7 +108,11 @@ function SearchScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 ">
-        <View className="flex flex-row bg-gray-100 items-center gap-3 p-3 rounded-md mx-3">
+        <View
+          className={`flex flex-row bg-gray-100 items-center gap-3 ${
+            Platform.OS == "ios" ? "p-3" : "px-3"
+          } rounded-md mx-3`}
+        >
           <Ionicons name="search" size={15} />
 
           <TextInput

@@ -1,4 +1,4 @@
-import { SafeAreaView, View, ScrollView } from "react-native";
+import { SafeAreaView, View, ScrollView, StatusBar } from "react-native";
 import BottomNavigationBar from "../../components/Navbars/BottomNavigationBar";
 import HomeScreenSearchBar from "../../components/HomeScreen/HomeScreenSearchBar";
 import { useNavigation } from "@react-navigation/native";
@@ -28,6 +28,8 @@ function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      <StatusBar backgroundColor="white" barStyle="dark-content" />
+
       <View className="flex-1 pt-1">
         <ScrollView showsVerticalScrollIndicator={false}>
           <HomeScreenSearchBar
