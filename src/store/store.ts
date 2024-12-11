@@ -13,6 +13,7 @@ import storage from "@react-native-async-storage/async-storage";
 
 import ProductSlice from "./slices/Product/ProductSlice";
 import ShoppingCartSlice from "./slices/ShoppingCart/ShoppingCartSlice";
+import AdminSlice from "./slices/Admin/AdminSlice";
 
 const persistConfig = {
   key: "root",
@@ -22,6 +23,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   ShoppingCart: persistReducer(persistConfig, ShoppingCartSlice),
   Product: ProductSlice,
+  Admin: AdminSlice,
 });
 
 export const store = configureStore({

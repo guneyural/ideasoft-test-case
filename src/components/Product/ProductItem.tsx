@@ -12,15 +12,19 @@ import { ProductType } from "../../store/slices/Product/types";
 import { useAppDispatch } from "../../helpers/reduxHooks";
 import { addToCart } from "../../store/slices/ShoppingCart/ShoppingCartSlice";
 import { useNavigation } from "@react-navigation/native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Antdesign from "react-native-vector-icons/AntDesign";
+import { deleteProduct } from "../../store/slices/Admin/AdminSlice";
 
 const { width } = Dimensions.get("window");
 const cardWidth = Math.floor(width / 2 - 24);
 
 type Props = {
   product: ProductType;
+  adminView: boolean;
 };
 
-function ProductItem({ product }: Props) {
+function ProductItem({ product, adminView = false }: Props) {
   const dispatch = useAppDispatch();
 
   const navigation = useNavigation();
@@ -131,12 +135,27 @@ function ProductItem({ product }: Props) {
         )}
       </View>
 
-      <TouchableOpacity
-        className="bg-black rounded-md py-2 mt-4 items-center justify-center"
-        onPress={() => dispatch(addToCart(product))}
-      >
-        <Text className="text-white font-semibold">Sepete Ekle</Text>
-      </TouchableOpacity>
+      {adminView ? (
+        <View className="flex-row gap-5 mt-4">
+          <TouchableOpacity className="bg-blue-600 items-center py-2 rounded-lg flex-1">
+            <Antdesign name="edit" size={20} color="white" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="bg-red-600 items-center py-2 rounded-lg flex-1"
+            onPress={() => dispatch(deleteProduct(product.id))}
+          >
+            <Ionicons name="trash-outline" color="white" size={20} />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <TouchableOpacity
+          className="bg-black rounded-md py-2 mt-4 items-center justify-center"
+          onPress={() => dispatch(addToCart(product))}
+        >
+          <Text className="text-white font-semibold">Sepete Ekle</Text>
+        </TouchableOpacity>
+      )}
     </Pressable>
   );
 }

@@ -29,7 +29,9 @@ export const fetchHomeScreenProducts = createAsyncThunk(
   "fetchHomeScreenProducts",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await Axios.get("/admin-api/products");
+      const response = await Axios.get(
+        "/admin-api/products?sort=-homeSortOrder"
+      );
 
       return response.data;
     } catch (error: any) {

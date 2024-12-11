@@ -27,3 +27,15 @@ export const stockTypeLabelTranslator = (text: string) => {
       return text;
   }
 };
+export const currencyLabelTranslator = (currencyId: string) => {
+  switch (currencyId) {
+    case "1":
+      return "Dolar";
+    case "2":
+      return "Euro";
+    case "3":
+      return "Türk Lirası";
+    default:
+      return "";
+  }
+};

@@ -7,10 +7,16 @@ import {
 import BottomTabs from "./BottomTabs";
 import { NavigationContainer } from "@react-navigation/native";
 import ProductDetailsScreen from "../screens/Product/ProductDetailsScreen";
+import AdminProductsScreen from "../screens/Admin/AdminProductsScreen";
+import AdminCategoriesScreen from "../screens/Admin/AdminCategoriesScreen";
+import CreateProductScreen from "../screens/Admin/CreateProductScreen";
 
 export type ApplicationStackParamList = {
   StartupScreen: undefined;
   ProductDetailsScreen: { id: string };
+  AdminProductsScreen: undefined;
+  AdminCategoriesScreen: undefined;
+  CreateProductScreen: undefined;
 };
 
 const Stack = createStackNavigator<ApplicationStackParamList>();
@@ -30,6 +36,18 @@ function ApplicationStack(): JSX.Element {
         <Stack.Screen
           name="ProductDetailsScreen"
           component={ProductDetailsScreen}
+        />
+        <Stack.Screen
+          name="AdminProductsScreen"
+          component={AdminProductsScreen}
+        />
+        <Stack.Screen
+          name="AdminCategoriesScreen"
+          component={AdminCategoriesScreen}
+        />
+        <Stack.Screen
+          name="CreateProductScreen"
+          component={CreateProductScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
